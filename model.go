@@ -66,7 +66,7 @@ func (p *product) createProduct(db *sql.DB) error {
 }
 
 func (p *product) updateProduct(db *sql.DB) error {
-	query := fmt.Sprintf("update products set name='%v', quantity='%v', price='%v' where id='%v'", p.Name, p.Quantity, p.Price, p.ID)
+	query := fmt.Sprintf("UPDATE products SET name='%v', quantity='%v', price='%v' where id='%v'", p.Name, p.Quantity, p.Price, p.ID)
 	result, err := db.Exec(query)
 
 	rowsAffected, err := result.RowsAffected()
@@ -76,4 +76,14 @@ func (p *product) updateProduct(db *sql.DB) error {
 	}
 
 	return err
+}
+
+func (p *product) deleteProduct(db *sql.DB) error {
+
+	query := fmt.Sprintf("DELETE FROM products WHERE id='%v'", p.ID)
+
+	_, err := db.Exec(query)
+
+	return err
+
 }

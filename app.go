@@ -120,9 +120,28 @@ func (app *App) updateProduct(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (app *App) deleteProduct(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	key, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		sendError(w, http.StatusBadRequest, "Invalid Product ID")
+	}
+
+	p := product{ID: key}
+
+	err = p.deleteProduct(app.DB)
+	if err != nil {
+		sendError(w, http.StatusBadRequest, err.Error())
+		return
+	}
+	sendResponse(w, http.StatusOK, map[string]string{"result": "Successfully deletion"})
+}
+
 func (app *App) handleRoutes() {
 	app.Router.HandleFunc("/products", app.getProducts).Methods("GET")
 	app.Router.HandleFunc("/products/{id}", app.getProduct).Methods("GET")
 	app.Router.HandleFunc("/products", app.createProduct).Methods("POST")
 	app.Router.HandleFunc("/products/{id}", app.updateProduct).Methods("PUT")
+	app.Router.HandleFunc("/products/{id}", app.deleteProduct).Methods("DELETE")
 }
